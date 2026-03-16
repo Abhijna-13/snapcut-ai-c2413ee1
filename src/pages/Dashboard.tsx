@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [dragActive, setDragActive] = useState(false);
 
   const handleFile = useCallback((file: File) => {
-    if (!UPLOAD_CONFIG.acceptedFormats.includes(file.type)) {
+    if (!(UPLOAD_CONFIG.acceptedFormats as readonly string[]).includes(file.type)) {
       toast.error('Unsupported format. Please use JPG, PNG, or WEBP.');
       return;
     }
