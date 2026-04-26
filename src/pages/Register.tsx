@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SITE_NAME } from '@/constants/copy';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { lovable } from '@/integrations/lovable';
 import logoSvg from '@/assets/logo.svg';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,12 +26,28 @@ const Register = () => {
       return;
     }
     setLoading(true);
-    toast.info('Supabase Auth not connected yet. Connect Lovable Cloud to enable registration.');
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+        data: { full_name: fullName },
+      },
+    });
     setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success('Account created! Welcome to SnapCut AI.');
+    navigate('/dashboard');
   };
 
-  const handleGoogleLogin = () => {
-    toast.info('Google OAuth not connected yet. Connect Lovable Cloud to enable.');
+  const handleGoogleLogin = async () => {
+    const result = await lovable.auth.signInWithOAuth('google', {
+      redirect_uri: `${window.location.origin}/dashboard`,
+    });
+    if (result.error) toast.error('Google sign-in failed');
   };
 
   return (

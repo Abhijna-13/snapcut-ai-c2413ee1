@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { SITE_NAME } from '@/constants/copy';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import logoSvg from '@/assets/logo.svg';
 
 const ForgotPassword = () => {
@@ -16,10 +17,15 @@ const ForgotPassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` })
-    toast.info('Supabase Auth not connected yet. Connect Lovable Cloud to enable password reset.');
-    setSent(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
     setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setSent(true);
   };
 
   return (

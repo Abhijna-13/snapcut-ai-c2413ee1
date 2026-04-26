@@ -14,7 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      processing_history: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          expires_at: string | null
+          id: string
+          original_url: string | null
+          processed_url: string | null
+          status: Database["public"]["Enums"]["processing_status"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          expires_at?: string | null
+          id?: string
+          original_url?: string | null
+          processed_url?: string | null
+          status?: Database["public"]["Enums"]["processing_status"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          expires_at?: string | null
+          id?: string
+          original_url?: string | null
+          processed_url?: string | null
+          status?: Database["public"]["Enums"]["processing_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          id: string
+          plan: Database["public"]["Enums"]["plan_type"]
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          plan?: Database["public"]["Enums"]["plan_type"]
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          plan?: Database["public"]["Enums"]["plan_type"]
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      users_profile: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          credits: number
+          credits_reset_at: string
+          full_name: string | null
+          id: string
+          plan: Database["public"]["Enums"]["plan_type"]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          credits?: number
+          credits_reset_at?: string
+          full_name?: string | null
+          id: string
+          plan?: Database["public"]["Enums"]["plan_type"]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          credits?: number
+          credits_reset_at?: string
+          full_name?: string | null
+          id?: string
+          plan?: Database["public"]["Enums"]["plan_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +124,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      plan_type: "free" | "pro" | "business"
+      processing_status: "pending" | "completed" | "failed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +252,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      plan_type: ["free", "pro", "business"],
+      processing_status: ["pending", "completed", "failed"],
+    },
   },
 } as const

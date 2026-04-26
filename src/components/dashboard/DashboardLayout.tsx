@@ -1,9 +1,12 @@
 import { useState, ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Upload, Clock, Settings, LogOut, CreditCard, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SITE_NAME } from '@/constants/copy';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuthStore } from '@/store/useAuthStore';
+import { toast } from 'sonner';
 import logoSvg from '@/assets/logo.svg';
 
 const sidebarLinks = [
@@ -18,11 +21,24 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const profile = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
 
-  // Mock user
-  const user = { full_name: 'Demo User', plan: 'free' as const, credits: 3 };
-  const creditsUsed = 1;
+  const user = {
+    full_name: profile?.full_name || 'User',
+    plan: profile?.plan || 'free',
+    credits: profile?.credits ?? 3,
+  };
+  const creditsUsed = Math.max(0, 3 - (profile?.credits ?? 3));
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    logout();
+    toast.success('Signed out');
+    navigate('/login');
+  };
 
   return (
     <div className="min-h-screen bg-brand-surface flex flex-col">
@@ -94,7 +110,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               )}
             </div>
 
-            <button className="flex items-center gap-2 px-3 py-2 w-full text-sm text-muted-foreground hover:text-destructive transition-colors rounded-lg hover:bg-destructive/5">
+            <button onClick={handleLogout} className="flex items-center gap-2 px-3 py-2 w-full text-sm text-muted-foreground hover:text-destructive transition-colors rounded-lg hover:bg-destructive/5">
               <LogOut size={16} />
               Logout
             </button>
