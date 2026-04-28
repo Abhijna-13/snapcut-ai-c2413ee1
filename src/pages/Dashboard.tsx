@@ -36,7 +36,7 @@ const Dashboard = () => {
   const handleProcess = async () => {
     if (!originalFile) return;
     setProcessing(true);
-    
+
     try {
       const response = await fetch('https://abhijna123.app.n8n.cloud/webhook/remove%20background-1', {
         method: 'POST',
@@ -56,9 +56,9 @@ const Dashboard = () => {
       } catch (e) {
         throw new Error('Could not parse response from webhook. Ensure n8n is returning JSON and CORS is enabled.');
       }
-      
+
       const resultUrl = data?.url || data?.secure_url || (data?.[0] && (data[0].url || data[0].secure_url));
-      
+
       if (resultUrl) {
         setProcessedImage(resultUrl);
         toast.success('Background removed successfully!');
@@ -91,9 +91,8 @@ const Dashboard = () => {
         {!originalImage ? (
           /* Upload zone */
           <div
-            className={`border-2 border-dashed rounded-xl p-12 md:p-20 text-center cursor-pointer transition-colors duration-150 ${
-              dragActive ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-accent/50'
-            }`}
+            className={`border-2 border-dashed rounded-xl p-12 md:p-20 text-center cursor-pointer transition-colors duration-150 ${dragActive ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50 hover:bg-accent/50'
+              }`}
             onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
             onDragLeave={() => setDragActive(false)}
             onDrop={handleDrop}
