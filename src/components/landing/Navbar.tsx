@@ -30,14 +30,9 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link to="/login">
+          <Link to="/dashboard">
             <Button variant="ghost" className="text-brand-blue-light/90 hover:text-primary-foreground hover:bg-brand-navy/40">
-              Log In
-            </Button>
-          </Link>
-          <Link to="/register">
-            <Button className="gradient-primary hover:opacity-90 transition-opacity duration-150 rounded-lg">
-              Get Started Free
+              Go to Dashboard
             </Button>
           </Link>
         </div>
@@ -66,13 +61,10 @@ const Navbar = () => {
             </a>
           ))}
           <div className="flex flex-col gap-2 mt-4">
-            <Link to="/login" onClick={() => setMobileOpen(false)}>
+            <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full text-brand-blue-light/90 hover:text-primary-foreground">
-                Log In
+                Go to Dashboard
               </Button>
-            </Link>
-            <Link to="/register" onClick={() => setMobileOpen(false)}>
-              <Button className="w-full gradient-primary rounded-lg">Get Started Free</Button>
             </Link>
           </div>
         </div>

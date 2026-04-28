@@ -7,7 +7,7 @@ import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useProcessStore } from '@/store/useProcessStore';
 
 const Dashboard = () => {
-  const { originalImage, processedImage, isProcessing, setOriginalImage, setProcessing, setProcessedImage, reset } = useProcessStore();
+  const { originalImage, processedImage, isProcessing, originalFile, setOriginalImage, setProcessing, setProcessedImage, reset } = useProcessStore();
   const [dragActive, setDragActive] = useState(false);
 
   const handleFile = useCallback((file: File) => {
@@ -34,11 +34,43 @@ const Dashboard = () => {
   }, [handleFile]);
 
   const handleProcess = async () => {
+    if (!originalFile) return;
     setProcessing(true);
-    // Simulate processing
-    await new Promise((r) => setTimeout(r, 2000));
-    setProcessedImage(originalImage);
-    toast.success('Background removed successfully!');
+    
+    try {
+      const response = await fetch('https://abhijna123.app.n8n.cloud/webhook/remove%20background-1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': originalFile.type,
+        },
+        body: originalFile,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process image');
+      }
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error('Could not parse response from webhook. Ensure n8n is returning JSON and CORS is enabled.');
+      }
+      
+      const resultUrl = data?.url || data?.secure_url || (data?.[0] && (data[0].url || data[0].secure_url));
+      
+      if (resultUrl) {
+        setProcessedImage(resultUrl);
+        toast.success('Background removed successfully!');
+      } else {
+        console.error('Webhook response:', data);
+        throw new Error('Invalid response format from webhook. Expected "url" or "secure_url".');
+      }
+    } catch (error) {
+      console.error('Error processing image:', error);
+      toast.error('Failed to remove background. Please try again.');
+      setProcessing(false);
+    }
   };
 
   const handleDownload = () => {

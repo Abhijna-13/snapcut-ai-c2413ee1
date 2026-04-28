@@ -46,9 +46,9 @@ const Hero = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <Link to="/register">
+              <Link to="/dashboard">
                 <Button size="lg" className="gradient-primary hover:opacity-90 transition-opacity duration-150 rounded-lg min-h-[44px] px-8 text-base font-semibold gap-2 w-full sm:w-auto">
-                  Start Free — No Card Required
+                  Go to Dashboard
                   <ArrowRight size={18} />
                 </Button>
               </Link>
